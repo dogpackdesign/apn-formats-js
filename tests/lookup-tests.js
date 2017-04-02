@@ -1,3 +1,4 @@
 var Apn = require('../apn/index');
 
-console.log(Apn.lookup("Wa", "King"));
+var results = Apn.lookup("wa");
+console.log(results);
