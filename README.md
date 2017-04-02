@@ -2,6 +2,8 @@
 <hr>
 <p>This package is meant to validate or lookup Assessor’s Parcel Number (APN) formats for any given state/county in the United States. This package is based off this <a href="https://github.com/dogpackdesign/apn-formats">python package</a></p>
 
+[![Build Status](https://travis-ci.org/dogpackdesign/apn-formats-js.svg?branch=master)](https://travis-ci.org/dogpackdesign/apn-formats-js)
+
 <h2>Getting Started</h2>
 <code>npm install apn-formats</code>
 
