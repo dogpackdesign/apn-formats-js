@@ -9,19 +9,17 @@ module.exports = {
             return input.toLowerCase();
         }
     },
-    verifyStateAbbrev: function(state) {
-        for (item in States) {
-            if (States.hasOwnProperty(item)) {
-                if (item === state) {
-                    return true;
+    verifyState: function(state) {
+        if (state.length === 2) {
+            for (item in States) {
+                if (States.hasOwnProperty(item)) {
+                    if (item === state) {
+                        return item;
+                    }
                 }
             }
-        }
-        throw state + " is not a valid state name.";
-    },
-    stateAbbrevConvert: function(state) {
-        for (item in States) {
-            if (States.hasOwnProperty(item)) {
+        } else {
+            for (item in States) {
                 if (States[item] === state) {
                     return item;
                 }
@@ -31,88 +29,54 @@ module.exports = {
     },
     lookup: function(state, county) {
         state = this.modifyInput(state);
-        this.verifyStateAbbrev(state);
         county = this.modifyInput(county);
         if (state) {
+            state = this.verifyState(state);
             if (county) {
-                if (state.length === 2) {
-                    try {
-                        return Formats[state][county]["formats"];
-                    } catch (err) {
-                        throw county + " is invalid county name.";
-                    }
-                } else {
-                    for (item in States) {
-                        if (States.hasOwnProperty(item)) {
-                            if (States[item] === state) {
-                                try {
-                                    return Formats[item][county]["apn_formats"];
-                                } catch (err) {
-                                    throw county + " is invalid county name.";
-                                }
-                            }
-                        }
-                    }
+                try {
+                    return Formats[state][county]["formats"];
+                } catch (err) {
                     throw county + " is invalid county name.";
                 }
             } else {
                 var data = {};
-                if (state.length === 2) {
-                    for (section in Formats[state]) {
-                        if (Formats[state].hasOwnProperty(section)) {
-                            data[section] = Formats[state][section].formats;
-                        }
-                    }
-                } else {
-                    for (item in States) {
-                        if (States.hasOwnProperty(item)) {
-                            if (States[item].replace(" ", "") == state.replace(" ", "")) {
-                                for (section in Formats[item]) {
-                                    data[section] = Formats[item][section].formats;
-                                }
-                            }
-                        }
+                for (section in Formats[state]) {
+                    if (Formats[state].hasOwnProperty(section)) {
+                        data[section] = Formats[state][section].formats;
                     }
                 }
                 return data;
             }
         } else {
+            for (st in Formats) {
+                if (Formats.hasOwnProperty(st)) {
+                    for (co in Formats[st]) {
+                        if (Formats[st].hasOwnProperty(co)) {
+                            delete Formats[st][co].regex;
+                            delete Formats[st][co].fips;
+                        }
+                    }
+                }
+            }
             return Formats;
         }
-
     },
     validate: function(apn_input, state, county) {
         if (apn_input) {
             if (state) {
-                state = state.toLowerCase();
+                state = this.verifyState(state.toLowerCase());
                 county = this.modifyInput(county);
-                if (state.length === 2) {
-                    if (this.verifyStateAbbrev(state)) {
-                        try {
-                            patterns = Formats[state].county.regex;
-                        } catch (err) {
-                            throw county + " is not a valid county name for state: " + state;
-                        }
-                        for (var i = 0; i < patterns.length; i++) {
-                            if (apn_input.search(patterns[i]) !== -1) {
-                                return true;
-                            }
-                        }
-                        return false;
-                    }
-                } else {
-                    stateName = this.stateAbbrevConvert(state);
-                    if (stateName) {
-                        patterns = Formats[stateName][county].regex;
-                        for (var i = 0; i < patterns.length; i++) {
-                            if (apn_input.search(patterns[i]) !== -1) {
-                                return true;
-                            }
-                        }
-                        return false;
-                    }
-                    throw state + " is not a valid state name.";
+                try {
+                    patterns = Formats[state][county].regex;
+                } catch (err) {
+                    throw county + " is not a valid county name for state: " + state;
                 }
+                for (var i = 0; i < patterns.length; i++) {
+                    if (apn_input.search(patterns[i]) !== -1) {
+                        return true;
+                    }
+                }
+                return false;
             } else {
                 throw "No state given";
             }
