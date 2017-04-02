@@ -6,6 +6,14 @@
   "directories": {
     "test": "tests"
   },
+  "keywords": [
+    "apn",
+    "assessor",
+    "parcel",
+    "number",
+    "assessor's parcel number",
+    "real estate"
+  ],
   "scripts": {
     "lookup": "node tests/lookup-tests.js",
     "validate": "node tests/validate-tests.js",
