@@ -1,4 +1,4 @@
-var Apn = require('../apn-formats/index');
+var Apn = require('../index');
 
 // true
 console.log(Apn.validate("123456-7890", "wa", "king"));

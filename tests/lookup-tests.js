@@ -1,4 +1,4 @@
-var apn = require('../apn-formats/index');
+var apn = require('../index');
 
 console.log(apn.lookup("Washington", "King"));
 console.log(apn.lookup("washington", "king"));

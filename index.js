@@ -1,5 +1,5 @@
-var Formats = require('./formats');
-var States = require('./states');
+var Formats = require('./data/formats');
+var States = require('./data/states');
 
 module.exports = {
     modifyInput: function(input) {
