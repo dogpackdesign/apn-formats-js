@@ -6,7 +6,7 @@ module.exports = {
         if (input == undefined) {
             return false;
         } else {
-            return input.toLowerCase();
+            return input.replace(" ", "").toLowerCase();
         }
     },
     verifyState: function(state) {
@@ -20,7 +20,7 @@ module.exports = {
             }
         } else {
             for (item in States) {
-                if (States[item] === state) {
+                if (States[item].replace(" ", "") === state) {
                     return item;
                 }
             }
@@ -29,15 +29,18 @@ module.exports = {
     },
     lookup: function(state, county) {
         state = this.modifyInput(state);
-        county = this.modifyInput(county);
+        modifiedCounty = this.modifyInput(county);
         if (state) {
             state = this.verifyState(state);
-            if (county) {
-                try {
-                    return Formats[state][county]["formats"];
-                } catch (err) {
-                    throw county + " is invalid county name.";
+            if (modifiedCounty) {
+                for (co in Formats[state]) {
+                    if (Formats[state].hasOwnProperty(co)) {
+                        if (co.replace(" ", "") === modifiedCounty) {
+                            return Formats[state][co]["formats"];
+                        }
+                    }
                 }
+                throw county + " is not a valid county name.";
             } else {
                 var data = {};
                 for (section in Formats[state]) {
